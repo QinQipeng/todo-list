@@ -33,6 +33,20 @@ function setter(attributes) {
   };
 }
 
+// function getter(todo_obj) {
+//   return function () {
+//     return JSON.parse(JSON.stringify(todo_obj));
+//   };
+// }
+
+// function setter(todo_obj) {
+//   return function (data_obj) {
+//     Object.entries(data_obj).forEach(([key, value]) => {
+//       todo_obj[key] = value;
+//     });
+//   };
+// }
+
 function Task({ id, title, description, isComplete, dueDate, priority }) {
   const task_obj = {
     _isComplete: isComplete ?? false,
@@ -151,7 +165,7 @@ function CheckList({ id, title, description, isComplete, dueDate, priority }) {
   return checklist_obj;
 }
 
-export { Task, Note, CheckList };
+export default { task: Task, note: Note, checklist: CheckList };
 
 // Deprecated structure of todos
 // class baseAttribute {
@@ -162,22 +176,22 @@ export { Task, Note, CheckList };
 //         this._type = data_obj.type ?? undefined;
 //     }
 
-    // get values() {
-    //     const returnObject = {}
-    //     Object.keys(this).forEach(key => {
-    //         returnObject[key.slice(1)] = this[key];
-    //     })
-    //     return returnObject;
-    // }
+// get values() {
+//     const returnObject = {}
+//     Object.keys(this).forEach(key => {
+//         returnObject[key.slice(1)] = this[key];
+//     })
+//     return returnObject;
+// }
 
-    // set values(data_obj) {
-    //     const validKeys = Object.keys(this.values);
-    //     Object.entries(data_obj).forEach(([key, value]) => {
-    //         if(validKeys.includes(key) && key != "id"){
-    //             this[`_${key}`] = value;
-    //         }
-    //     })
-    // }
+// set values(data_obj) {
+//     const validKeys = Object.keys(this.values);
+//     Object.entries(data_obj).forEach(([key, value]) => {
+//         if(validKeys.includes(key) && key != "id"){
+//             this[`_${key}`] = value;
+//         }
+//     })
+// }
 // }
 
 // class Task extends baseAttribute{

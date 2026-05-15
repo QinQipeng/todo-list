@@ -3,8 +3,8 @@ class Project {
     this._id_ = id ?? crypto.randomUUID();
     this._description = description;
     this._title = title ?? "";
-    this._type = type ?? "";
-    this._todoIDs = [];
+    this._type_ = type ?? "";
+    this._todoIDs_ = [];
     this._creationDate_ = new Date();
   }
 
@@ -13,18 +13,18 @@ class Project {
     Object.keys(this).forEach((key) => {
       returnObject[key.split("_").join("")] = this[key];
     });
-    return returnObject;
+    return returnthis;
   }
 
   set values(data_obj) {
     const validKeys = Object.keys(this).filter((key) => key.slice(-1) != "_");
 
-    Object.entries(data_obj).forEach(([key, value]) => {
-      key = `_${key}`;
-      if (validKeys.includes(key)) {
-        this[`_${key}`] = value;
-      }
-    });
+  Object.entries(data_obj).forEach(([key, value]) => {
+    key = `_${key}`;
+    if (validKeys.includes(key)) {
+      this[`_${key}`] = value;
+    }
+  });
   }
 
   get size() {
@@ -35,11 +35,7 @@ class Project {
     return [...this._todoIDs];
   }
 
-  addTodo(todo_obj) {
-    if (!(todo_obj && todo_obj?.values)) return;
-    const { id, type } = todo_obj?.values;
-
-    if (this._type != type) return;
+  addTodo(id) {
     this._todoIDs.push(id);
   }
 
