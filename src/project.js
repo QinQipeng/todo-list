@@ -1,30 +1,26 @@
 class Project {
   constructor({ id, title, type, description }) {
-    this._id_ = id ?? crypto.randomUUID();
+    this._id = id ?? crypto.randomUUID();
     this._description = description;
     this._title = title ?? "";
-    this._type_ = type ?? "";
-    this._todoIDs_ = [];
-    this._creationDate_ = new Date();
+    this._type = type ?? "";
+    this._todoIDs = [];
+    this._createDate = new Date();
   }
 
   get values() {
-    const returnObject = {};
-    Object.keys(this).forEach((key) => {
-      returnObject[key.split("_").join("")] = this[key];
-    });
-    return returnthis;
+    Object.fromEntries(
+      Object.entries(this).map((keyValue) => [
+        keyValue[0].slice(1),
+        keyValue[1],
+      ]),
+    );
   }
 
   set values(data_obj) {
-    const validKeys = Object.keys(this).filter((key) => key.slice(-1) != "_");
-
-  Object.entries(data_obj).forEach(([key, value]) => {
-    key = `_${key}`;
-    if (validKeys.includes(key)) {
-      this[`_${key}`] = value;
-    }
-  });
+    Object.entries(data_obj).forEach(
+      ([key, value]) => (todo_obj[`_${key}`] = value),
+    );
   }
 
   get size() {
@@ -45,7 +41,7 @@ class Project {
 
   removeTodo(id) {
     const toRemove = this.getTodoIndex(todo_obj);
-    if (toRemove != -1) this._todoIDs.splice(this.getTodoIndex(toRemove), 1);
+    if (toRemove != -1) this._todoIDs.splice(toRemove, 1);
   }
 
   containsTodo(id) {

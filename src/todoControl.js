@@ -2,53 +2,47 @@ import {
   MissingTypeError,
   TypeMismatchError,
   InvalidTypeError,
-} from "./errors";
-import { Task, Note, CheckList } from "./todo";
-import Project from "./project";
+} from "./errors.js";
+import Todo from "./todo.js";
+import Project from "./project.js";
 
 class todoControl {
   constructor() {
     this._projectCache = {};
     this._todoCache = {};
+    this._validTodos = Object.keys(Todo);
+    this._readOnlyKeys = ["id", "createDate", "type"]; // Default set of read-only keys
+  }
+
+  _filterData(dataObj, validKeys) {
+    return Object.fromEntries(
+      Object.entries(dataObj).filter((keyValue) =>
+        validKeys.includes(keyValue[0]),
+      ),
+    );
   }
 
   // todo methods
-  createTodo(data, proj_id = "") {
-    if (!data?.type)
-      throw MissingTypeError("Specifying type for todo is a must");
+  createTodo(dataObj, proj_id = "") {
+    if (!dataObj?.type)
+      throw new MissingTypeError("Specifying type for todo is a must");
+    if (!this._validTodos.includes(dataObj.type))
+      throw new InvalidTypeError(
+        "Invalid todo type (must be either task, note, or checklist)",
+      );
 
-    let newTodo = {};
-
-    switch (data.type) {
-      case "task": {
-        newTodo = Task(data);
-        break;
-      }
-      case "note": {
-        newTodo = Note(data);
-        break;
-      }
-      case "checklist": {
-        newTodo = CheckList(data);
-        break;
-      }
-      default:
-        throw InvalidTypeError(
-          "invalid todo type (must be either task, note, or checklist)",
-        );
-    }
-
+    const newTodo = Todo[dataObj.type](dataObj);
     this._todoCache[newTodo.values.id] = newTodo;
 
     if (proj_id && this._projectCache[proj_id]) {
-      if (this._projectCache[proj_id] && data.type != proj?.type)
-        throw TypeMismatchError("todo must match with project in type");
+      if (this._projectCache[proj_id] && dataObj.type != proj?.type)
+        throw new TypeMismatchError("todo must match with project in type");
       else this._projectCache[proj_id].addTodo(newTodo);
     }
   }
 
   deleteTodo(id) {
-    if (this.getTodo[id] == undefined) return;
+    if (this.getTodo(id) == undefined) return;
 
     const targeted_proj = Object.values(this._projectCache)
       .filter((proj) => proj.containsTodo(id))
@@ -58,13 +52,40 @@ class todoControl {
   }
 
   updateTodo(id, new_data) {
-    if (this.getTodo[id] == undefined) return;
+    if (this.getTodo(id) == undefined) return;
 
-    this._todoCache[id].values = new_data;
+    const validKeys = Object.keys(this.getTodo(id).values).filter((key) =>
+      !this._readOnlyKeys.includes(key),
+    );
+    this._todoCache[id].values = this._filterData(new_data, validKeys);
   }
 
   getTodo(id) {
     return this._todoCache[id];
+  }
+
+  tickTodo(id) {
+    if (!this.getTodo(id).values?.isComplete) return
+
+    this._todoCache[id].tickout();
+  }
+
+  setTodoDueDate(id, dateStr) {
+    if (!this.getTodo(id).values?.dueDate) return
+
+    const newDate = new Date(dateStr);
+    if(!isNaN(newDate)){
+      this._todoCache[id].setDueDate(newDate);
+    }
+  }
+
+  setPriority(id, priorStr) {
+    if (!this.getTodo(id).values?.priority) return
+
+    const priorTypes = ["none", "low", "middle", "high"];
+    if(priorTypes.includes(priorStr)) {
+      this._todoCache[id].setPriority(priorStr);
+    }
   }
 
   getTodoList(id, type = "all") {
@@ -77,19 +98,12 @@ class todoControl {
   // project methods
   createProject(data) {
     if (!(data && data?.type))
-      throw MissingTypeError("Specifying type for project is a must");
+      throw new MissingTypeError("Specifying type for project is a must");
 
-    if (
-      !(
-        data?.type == "task" ||
-        data?.type == "note" ||
-        data?.type == "checklist"
-      )
-    ) {
-      throw InvalidTypeError(
-        "invalid todo type (must be either task, note, or checklist)",
+    if (!this._validTodos.includes(dataObj))
+      throw new InvalidTypeError(
+        "Invalid project type (must be either task, note, or checklist)",
       );
-    }
 
     const newProj = new Project(data);
     this._projectCache[newProj.values.id] = newProj;
@@ -100,7 +114,7 @@ class todoControl {
   }
 
   deleteProject(id) {
-    if (this.getProject[id] == undefined) return;
+    if (this.getProject(id) == undefined) return;
 
     delete this._projectCache[id];
   }
@@ -108,7 +122,10 @@ class todoControl {
   updateProjectInfo(id, new_data) {
     if (this.getProject(id) == undefined) return;
 
-    this._projectCache[id].values = new_data;
+    const validKeys = Object.keys(this.getProject(id).values).filter((key) =>
+      !this._readOnlyKeys.includes(key),
+    );
+    this._projectCache[id].values = this._filterData(new_data, validKeys);
   }
 
   addTodo2Project(todoID, projID) {
@@ -119,7 +136,7 @@ class todoControl {
       return;
 
     if (this.getProject(projID).type != this.getTodo(todoID).type)
-      throw TypeMismatchError("todo must match with project in type");
+      throw new TypeMismatchError("todo must match with project in type");
 
     this._projectCache[proj_id].addTodo(this._todoCache[todoID]);
   }
@@ -134,7 +151,7 @@ class todoControl {
     this._projectCache[projeID].removeTodo(todoID);
   }
 
-  getAllProjects() {
+  getProjectList(type = all) {
     const projectList = Object.values(this._projectCache);
 
     if (type == "all") return projectList;
@@ -152,9 +169,11 @@ class todoControl {
       key.includes("Date") ? new Date(value) : value;
 
     if (localStorage.getItem("projectCache"))
-      this._projectCache = JSON.parse(localStorage.getItem("projectCache"), reviver);
+      this._projectCache = JSON.parse(localStorage.getItem("projectCache"));
 
     if (localStorage.getItem("todoCache"))
-      this._todoCache = JSON.parse(localStorage.getItem("todoCache"), reviver);
+      this._todoCache = JSON.parse(localStorage.getItem("todoCache"));
   }
 }
+
+export default todoControl;

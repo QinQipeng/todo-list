@@ -1,77 +1,43 @@
+import { format } from "date-fns";
+
 function baseAttribute({ id, title, description }) {
   return {
-    _id_: id ?? crypto.randomUUID(),
+    _id: id ?? crypto.randomUUID(),
     _title: title ?? "",
     _description: description ?? "",
-    _creationDate_: new Date(),
+    _createDate: format(new Date(), "yyyy-MM-dd"),
   };
 }
 
-function getter(attributes) {
+function getter(todo_obj) {
   return function () {
-    const returnObject = {};
-    Object.keys(attributes).forEach((key) => {
-      if (typeof attributes[key] != "function")
-        returnObject[key.split("_").join("")] = attributes[key];
-    });
-    return returnObject;
+    return JSON.parse(JSON.stringify(todo_obj).replaceAll("_", "")); // Trim the prefix and filter out functions
   };
 }
 
-function setter(attributes) {
-  const validKeys = Object.keys(attributes).filter(
-    (key) => key.slice(-1) != "_" && typeof attributes[key] != "function",
-  );
-
+function setter(todo_obj) {
   return function (data_obj) {
-    Object.entries(data_obj).forEach(([key, value]) => {
-      key = `_${key}`;
-      if (validKeys.includes(key)) {
-        attributes[key] = value;
-      }
-    });
+    Object.entries(data_obj).forEach(
+      ([key, value]) => (todo_obj[`_${key}`] = value),
+    );
   };
 }
-
-// function getter(todo_obj) {
-//   return function () {
-//     return JSON.parse(JSON.stringify(todo_obj));
-//   };
-// }
-
-// function setter(todo_obj) {
-//   return function (data_obj) {
-//     Object.entries(data_obj).forEach(([key, value]) => {
-//       todo_obj[key] = value;
-//     });
-//   };
-// }
 
 function Task({ id, title, description, isComplete, dueDate, priority }) {
   const task_obj = {
     _isComplete: isComplete ?? false,
     _dueDate: dueDate,
     _priority: priority ?? "none",
-    _type_: "task",
+    _type: "task",
 
     setPriority: (priority) => {
-      switch (priority) {
-        case 3:
-          task_obj._priority = "high";
-        case 2:
-          task_obj._priority = "medium";
-        case 1:
-          task_obj._priority = "low";
-        default:
-          task_obj._priority = "none";
-      }
+      task_obj._priority = priority;
     },
     tickout: () => {
-      task_obj._isComplete =
-        task_obj._isComplete == undefined ? true : !task_obj._isComplete;
+      task_obj._isComplete = !task_obj._isComplete;
     },
-    setDueDate: (dateString) => {
-      task_obj._dueDate = new Date(dateString);
+    setDueDate: (dateObj) => {
+      task_obj._dueDate = format(dateObj, "yyyy-MM-dd");
     },
   };
 
@@ -90,7 +56,7 @@ function Task({ id, title, description, isComplete, dueDate, priority }) {
 
 function Note({ id, title, description }) {
   const note_obj = {
-    _type_: "note",
+    _type: "note",
   };
 
   Object.assign(
@@ -153,7 +119,7 @@ function CheckList({ id, title, description, isComplete, dueDate, priority }) {
     }),
     checkListFunc(checklist_obj),
     {
-      _type_: "checklist",
+      _type: "checklist",
     },
   );
 
