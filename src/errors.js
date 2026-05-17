@@ -15,7 +15,7 @@ class TypeMismatchError extends Error {
 class InvalidTypeError extends Error {
   constructor(message) {
     super(message);
-    this.name = "TypeMismatchError";
+    this.name = "InvalidTypeError";
   }
 }
 

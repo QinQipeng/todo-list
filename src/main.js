@@ -1,156 +1,141 @@
 import "./styles.css";
+import todoControl from "./todoControl.js";
 // import { Task, CheckList} from "./todos.js";
 // import { Task, Note, CheckList} from "./todos.js";
 // import Project from "./project.js";
 import TodoControl from "./todoControl.js";
 
-const test1 = {
-    "title":       "Task1",
-    "description": "Tasking set 1",
-    "type": "task"
-}
-
-const test2 = {
-    "title":            "Task3",
-    "description":      "Tasking with attempt to add attribute that don't belong",
-    "false attribute":  "I should not exist",
-    "type": "task",
-}
-
-const todoCtrl = new TodoControl();
-todoCtrl.createTodo(test1);
-todoCtrl.createTodo(test2);
-console.log(todoCtrl.getTodoList());
-console.log(todoCtrl._todoCache)
-
-const test1ID = todoCtrl.getTodoList()[0].values.id
-console.log(test1ID)
-
-todoCtrl.updateTodo(test1ID, {
-    "id":           "1234",
-    "title":        "Task111",
-    "description":  "Tasking with false attempt to change id",
-    "type": "something else",
-    "some": "bullshit"
-})
-
-console.log(todoCtrl.getTodo(test1ID).values)
-
-// const task = Task({
+// const test1 = {
 //     "title":       "Task1",
 //     "description": "Tasking set 1",
-// });
-
-// console.log(task.values)
-
-// const task2 = Task({
-//     "title":       "Task2",
-//     "description": "Tasking set 2",
-// })
-
-// console.log(task2.values)
-
-// task.values = {
-//     "title": "Hello",
-//     "description": "World"
+//     "type": "task"
 // }
-
-// console.log(task.values)
-
-// task.tickout()
-
-// console.log(task.values)
-
-// task.tickout()
-
-// console.log(task.values)
-
-// task.setDueDate("2026-05-05")
-
-// console.log(task.values.dueDate.toDateString())
-
 
 // const test2 = {
+//     "title":            "Task2",
+//     "description":      "Tasking set 2",
+//     "type": "task",
+// }
+
+const todoCtrl = new TodoControl();
+// todoCtrl.createTodo(test1);
+// todoCtrl.createTodo(test2);
+// console.log(todoCtrl.getTodoList());
+// console.log(todoCtrl._todoCache)
+
+// const test1ID = todoCtrl.getTodoList()[0].values.id
+// console.log(test1ID)
+
+// todoCtrl.updateTodo(test1ID, {
 //     "id":           "1234",
-//     "title":        "Task2",
+//     "title":        "Task111",
 //     "description":  "Tasking with false attempt to change id",
-// }
-
-// task.values = test2;
-// console.log(task.values["id"]);
-
-// const test3 = {
-//     "title":            "Task3",
-//     "description":      "Tasking with attempt to add attribute that don't belong",
-//     "false attribute":  "I should not exist"
-// }
-
-// const task3 = Task(test3)
-
-// task.values = test3;
-// console.log(task.values);
-
-// const listObject = CheckList({
-//     title:"check1", 
-//     description:"I am a checklist", 
-//     type:"none",
-//     isComplete: false,
-//     dueDate: new Date(),
-//     priority: "none"
+//     "type": "something else",
+//     "some": "bullshit"
 // })
+// console.log(todoCtrl.getTodo(test1ID).values);
 
-// listObject.addListItem("Item 1")
-// listObject.addListItem("Item 2")
-// listObject.addListItem("Item 3")
-// console.log(listObject.values)
-// console.log(listObject.size())
+// todoCtrl.tickTodo(test1ID);
+// todoCtrl.setTodoPriority(test1ID, "high");
+// todoCtrl.setTodoDueDate(test1ID, "2025/5/20");
+// console.log(todoCtrl.getTodo(test1ID).values);
 
-// console.log(listObject.getListItem(0).item_name)
-// listObject.renameListItem(0,"Renamed Item 1")
-// console.log(listObject.getListItem(0).item_name)
-
-// console.log(listObject.getListItem(1).checked)
-// listObject.checkListItem(1)
-// console.log(listObject.getListItem(1).checked)
-
-// listObject.removeListItem(2)
-// console.log(listObject.size())
-
-// const note1 = Note({
-//     "title": "Note 1",
-//     "description":  "I am a note"
-// })
-
-// console.log(note1.values)
-
-// note1.values = {"type": "something else", "title":"a great note", "description": "what a great note!"}
-// console.log(note1.values)
-
-// const project = new Project({
+// todoCtrl.createProject({
 //     title: "new project",
-//     type:  "Task",
+//     type:  "task",
 //     description: "a new project entity for testing"
 // });
 
-// console.log(project.values);
+// const proj1ID = todoCtrl.getProjectList()[0].values.id;
+// const test2ID = todoCtrl.getTodoList()[1].values.id;
 
-// project.values = {
-//     id: "adwadawdas",
-//     something: "something something",
-//     title: "New Project",
-//     description: "A New Project Entity for Tasking"
-// };
+// todoCtrl.createTodo({
+//     "title": "Hello",
+//     "description": "World",
+//     "type": "task",
+//     "false attribute":  "I should not exist"
+// }, proj1ID);
 
-// console.log(project.values);
+// todoCtrl.addTodo2Project(test1ID, proj1ID);
+// todoCtrl.addTodo2Project(test2ID, proj1ID);
+// console.log(`${todoCtrl.getProject(proj1ID).values.todoIDs}, size ${todoCtrl.getProject(proj1ID).size}`);
 
-// project.addTodo(task);
-// console.log(project.todos[0] == task.values.id)
+// todoCtrl.updateProjectInfo(proj1ID, {
+//     title: "New project",
+//     type:  "task",
+//     description: "A New Task Project Entity For Testing"
+// })
+// console.log(todoCtrl.getProject(proj1ID).values)
 
-// project.addTodo(task2)
-// project.addTodo(task3)
-// project.addTodo(note1)
-// console.log(project.todos);
+// // const toDelete = todoCtrl.getTodoList().at(-1).values.id;
+// todoCtrl.deleteTodo(test1ID);
+// console.log(`${todoCtrl.getProject(proj1ID).values.todoIDs}, size ${todoCtrl.getProject(proj1ID).size}`);
+// console.log(todoCtrl._todoCache);
 
-// console.log(project.containsTodo(note1))
-// project.removeTodo(task3)
-// console.log(project.todos);
+// todoCtrl.createTodo({
+//     title:"checklist 1", 
+//     description:"I am a checklist", 
+//     type: "checklist",
+//     isComplete: false,
+//     dueDate: "2026/5/21",
+//     priority: "middle"
+// })
+
+// const checklist1 = todoCtrl.getTodoList("checklist")[0]
+
+// checklist1.addListItem("Item 1")
+// checklist1.addListItem("Item 2")
+// checklist1.addListItem("Item 3")
+
+// console.log(todoCtrl.getTodoList("checklist")[0].values)
+// console.log(todoCtrl.getTodoList("checklist")[0].size())
+
+// console.log(checklist1.getListItem(0).item_name)
+// checklist1.renameListItem(0,"Renamed Item 1")
+// console.log(checklist1.getListItem(0).item_name)
+
+// console.log(checklist1.getListItem(1).checkStatus)
+// checklist1.checkListItem(1)
+// console.log(checklist1.getListItem(1).checkStatus)
+
+// checklist1.removeListItem(2)
+// checklist1.values = {description: "I am THE checklist"}
+// console.log(todoCtrl.getTodoList("checklist")[0].values)
+
+// todoCtrl.createTodo({
+//     "title": "Note 1",
+//     "description":  "I am a note",
+//     "type": "note"
+// })
+
+// const note1 = todoCtrl.getTodoList("note")[0];
+// todoCtrl.updateTodo(note1.values.id, {"type": "something else", "title":"A great note", "description": "What a Great Note!"})
+// console.log(note1.values)
+
+// todoCtrl.createProject({
+//     title: "Note project",
+//     type:  "note",
+//     description: "A new project entity for note"
+// });
+
+// todoCtrl.createProject({
+//     title: "Checklist project",
+//     type:  "checklist",
+//     description: "A new project entity for checklist"
+// });
+
+// const noteProj = todoCtrl.getProjectList("note")[0]
+// const checklistProj = todoCtrl.getProjectList("checklist")[0]
+
+// todoCtrl.addTodo2Project(note1.values.id, noteProj.values.id);
+// todoCtrl.addTodo2Project(checklist1.values.id, checklistProj.values.id);
+
+// console.log(todoCtrl);
+
+// todoCtrl.deleteProject(noteProj.values.id);
+
+// todoCtrl.saveToLocalStorage()
+// todoCtrl.loadFromLocalStorage()
+
+// console.log(todoCtrl.getProjectList());
+// console.log(todoCtrl.getTodoList());

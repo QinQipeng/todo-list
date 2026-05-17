@@ -9,7 +9,7 @@ class Project {
   }
 
   get values() {
-    Object.fromEntries(
+    return Object.fromEntries(
       Object.entries(this).map((keyValue) => [
         keyValue[0].slice(1),
         keyValue[1],
@@ -19,7 +19,7 @@ class Project {
 
   set values(data_obj) {
     Object.entries(data_obj).forEach(
-      ([key, value]) => (todo_obj[`_${key}`] = value),
+      ([key, value]) => (this[`_${key}`] = value),
     );
   }
 
@@ -40,14 +40,12 @@ class Project {
   }
 
   removeTodo(id) {
-    const toRemove = this.getTodoIndex(todo_obj);
-    if (toRemove != -1) this._todoIDs.splice(toRemove, 1);
+    const idx_rm = this.getTodoIndex(id);
+    if (idx_rm != -1) this._todoIDs.splice(idx_rm, 1);
   }
 
   containsTodo(id) {
-    if (!(todo_obj && todo_obj?.values)) return false;
-
-    return this.getTodoIndex(todo_obj.id) != -1;
+    return this.getTodoIndex(id) != -1;
   }
 }
 

@@ -26,7 +26,7 @@ function setter(todo_obj) {
 function Task({ id, title, description, isComplete, dueDate, priority }) {
   const task_obj = {
     _isComplete: isComplete ?? false,
-    _dueDate: dueDate,
+    _dueDate: dueDate ?? "",
     _priority: priority ?? "none",
     _type: "task",
 
@@ -72,10 +72,10 @@ function Note({ id, title, description }) {
   return note_obj;
 }
 
-function CheckList({ id, title, description, isComplete, dueDate, priority }) {
+function CheckList({ id, title, description, isComplete, dueDate, priority, length, checkList }) {
   const checklist_obj = {
-    _length: 0,
-    _checkList: [],
+    _length: length ?? 0,
+    _checkList: checkList ?? [],
   };
 
   const checkListFunc = function (checklist) {
@@ -84,7 +84,7 @@ function CheckList({ id, title, description, isComplete, dueDate, priority }) {
         const listItem = {
           item_ID: checklist._length++,
           item_name: name,
-          checked: false,
+          checkStatus: false,
         };
 
         checklist._checkList.push(listItem);
@@ -100,8 +100,8 @@ function CheckList({ id, title, description, isComplete, dueDate, priority }) {
         checklist._checkList[id].item_name = newName;
       },
       checkListItem: (id) => {
-        let current = checklist._checkList[id].checked;
-        checklist._checkList[id].checked = !current;
+        let current = checklist._checkList[id].checkStatus;
+        checklist._checkList[id].checkStatus = !current;
       },
       size: () => checklist._length,
     };
@@ -189,14 +189,14 @@ export default { task: Task, note: Note, checklist: CheckList };
 //         const listItem = {
 //             _item_ID:    this._length++,
 //             item_name:  name,
-//             checked:    false,
+//             checkStatus:    false,
 //         }
 
 //         Object.defineProperty(listItem,"values",{
 //             get() {
 //                 return {
 //                     "item_name": this.item_name,
-//                     "isChecked": this.checked
+//                     "isChecked": this.checkStatus
 //                 }
 //             },
 
@@ -223,7 +223,7 @@ export default { task: Task, note: Note, checklist: CheckList };
 //     }
 
 //     checkListItem(id) {
-//         this._checkList.at(id).values = {"checked":true}
+//         this._checkList.at(id).values = {"checkStatus":true}
 //     }
 
 // }

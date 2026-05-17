@@ -35,29 +35,31 @@ class todoControl {
     this._todoCache[newTodo.values.id] = newTodo;
 
     if (proj_id && this._projectCache[proj_id]) {
-      if (this._projectCache[proj_id] && dataObj.type != proj?.type)
+      const isTypeMatch = this._projectCache[proj_id].values.type == newTodo.values.type
+      if (!isTypeMatch)
         throw new TypeMismatchError("todo must match with project in type");
-      else this._projectCache[proj_id].addTodo(newTodo);
+
+      this._projectCache[proj_id].addTodo(newTodo.values.id);
     }
   }
 
   deleteTodo(id) {
     if (this.getTodo(id) == undefined) return;
 
-    const targeted_proj = Object.values(this._projectCache)
-      .filter((proj) => proj.containsTodo(id))
-      .map((proj) => proj.removeTodo(id));
+    const targeted_proj = Object.keys(this._projectCache).forEach(projID => {
+      this.removeTodoFromProject(id, projID)
+    })
 
     delete this._todoCache[id];
   }
 
-  updateTodo(id, new_data) {
+  updateTodo(id, newData) {
     if (this.getTodo(id) == undefined) return;
 
-    const validKeys = Object.keys(this.getTodo(id).values).filter((key) =>
-      !this._readOnlyKeys.includes(key),
+    const validKeys = Object.keys(this.getTodo(id).values).filter(
+      (key) => !this._readOnlyKeys.includes(key),
     );
-    this._todoCache[id].values = this._filterData(new_data, validKeys);
+    this._todoCache[id].values = this._filterData(newData, validKeys);
   }
 
   getTodo(id) {
@@ -65,47 +67,47 @@ class todoControl {
   }
 
   tickTodo(id) {
-    if (!this.getTodo(id).values?.isComplete) return
+    if (!this.getTodo(id)?.values?.isComplete === "undefined") return;
 
     this._todoCache[id].tickout();
   }
 
   setTodoDueDate(id, dateStr) {
-    if (!this.getTodo(id).values?.dueDate) return
+    if (!this.getTodo(id)?.values?.dueDate === "undefined") return;
 
     const newDate = new Date(dateStr);
-    if(!isNaN(newDate)){
+    if (!isNaN(newDate)) {
       this._todoCache[id].setDueDate(newDate);
     }
   }
 
-  setPriority(id, priorStr) {
-    if (!this.getTodo(id).values?.priority) return
+  setTodoPriority(id, priorStr) {
+    if (!this.getTodo(id)?.values?.priority) return;
 
     const priorTypes = ["none", "low", "middle", "high"];
-    if(priorTypes.includes(priorStr)) {
+    if (priorTypes.includes(priorStr)) {
       this._todoCache[id].setPriority(priorStr);
     }
   }
 
-  getTodoList(id, type = "all") {
+  getTodoList(type = "all") {
     const todoList = Object.values(this._todoCache);
 
     if (type == "all") return todoList;
-    else return todoList.filter((todo) => todo.type == type);
+    else return todoList.filter((todo) => todo.values.type == type);
   }
 
   // project methods
-  createProject(data) {
-    if (!(data && data?.type))
+  createProject(dataObj) {
+    if (!(dataObj && dataObj?.type))
       throw new MissingTypeError("Specifying type for project is a must");
 
-    if (!this._validTodos.includes(dataObj))
+    if (!this._validTodos.includes(dataObj.type))
       throw new InvalidTypeError(
         "Invalid project type (must be either task, note, or checklist)",
       );
 
-    const newProj = new Project(data);
+    const newProj = new Project(dataObj);
     this._projectCache[newProj.values.id] = newProj;
   }
 
@@ -122,8 +124,8 @@ class todoControl {
   updateProjectInfo(id, new_data) {
     if (this.getProject(id) == undefined) return;
 
-    const validKeys = Object.keys(this.getProject(id).values).filter((key) =>
-      !this._readOnlyKeys.includes(key),
+    const validKeys = Object.keys(this.getProject(id).values).filter(
+      (key) => !this._readOnlyKeys.includes(key),
     );
     this._projectCache[id].values = this._filterData(new_data, validKeys);
   }
@@ -138,41 +140,55 @@ class todoControl {
     if (this.getProject(projID).type != this.getTodo(todoID).type)
       throw new TypeMismatchError("todo must match with project in type");
 
-    this._projectCache[proj_id].addTodo(this._todoCache[todoID]);
+    if(this.getProject(projID).containsTodo(todoID)) return;
+
+    this._projectCache[projID].addTodo(this._todoCache[todoID].values.id);
   }
 
-  removeTodoFromProject(todoID, projeID) {
+  removeTodoFromProject(todoID, projID) {
     if (
       this.getProject(projID) == undefined ||
       this.getTodo(todoID) == undefined
     )
       return;
 
-    this._projectCache[projeID].removeTodo(todoID);
+    this._projectCache[projID].removeTodo(todoID);
   }
 
-  getProjectList(type = all) {
+  getProjectList(type = "all") {
     const projectList = Object.values(this._projectCache);
 
     if (type == "all") return projectList;
-    else return projectList.filter((proj) => proj.type == type);
+    else return projectList.filter((proj) => proj.values.type == type);
   }
 
   // Local Cache methods
   saveToLocalStorage() {
-    localStorage.setItem("projectCache", JSON.stringify(this._projectCache));
-    localStorage.setItem("todoCache", JSON.stringify(this._todoCache));
+    const storeCache = function (cache, cacheName) {
+      const cacheList = Object.values(cache).map(
+        (cacheItem) => (cacheItem = cacheItem.values),
+      );
+      localStorage.setItem(cacheName, JSON.stringify(cacheList));
+    };
+
+    storeCache(this._projectCache, "projCache");
+    storeCache(this._todoCache, "todoCache");
   }
 
   loadFromLocalStorage() {
-    const reviver = (key, value) =>
-      key.includes("Date") ? new Date(value) : value;
+    const loadCache = function (cacheName) {
+      let cache = JSON.parse(localStorage.getItem(cacheName));
+      cache = cache.map((cacheItem) => [
+          cacheItem.id,
+          cacheName == "projCache"
+            ? new Project(cacheItem)
+            : Todo[cacheItem.type](cacheItem),
+        ]);
+      return Object.fromEntries(cache);
+    };
 
-    if (localStorage.getItem("projectCache"))
-      this._projectCache = JSON.parse(localStorage.getItem("projectCache"));
-
-    if (localStorage.getItem("todoCache"))
-      this._todoCache = JSON.parse(localStorage.getItem("todoCache"));
+    this._projectCache = loadCache("projCache");
+    this._todoCache = loadCache("todoCache");
   }
 }
 
