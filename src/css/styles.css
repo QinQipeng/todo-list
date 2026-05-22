@@ -1,0 +1,121 @@
+@import url(./modern-normalize.css);
+
+:root {
+  --primary-color: rgb(234, 75, 17);
+  --bg-color: rgb(236, 236, 236);
+  --text-color: rgb(40, 40, 40);
+}
+
+body, h1, h2, h3, h4, h5, figure, p, ol, ul {
+  margin: 0;
+  padding: 0;
+}
+
+ol, ul {
+  list-style: none;
+  padding-inline: 0;
+}
+
+img,svg {
+  display: block;
+  max-inline-size: 100%;
+  height: 100%;
+}
+
+input, button {
+    background-color: transparent;
+    appearance: none;
+    height: 100%;
+    border: 0px;
+    padding: 0;
+    margin: 0;   
+}
+
+label,
+button:hover {
+    cursor: pointer;
+}
+
+body {
+  display: grid;
+  grid-template-columns: minmax(300px,1fr) 3fr;
+  height: 100vh;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  background-color: var(--bg-color);
+  gap: 1.5rem;
+  padding: 1rem;
+}
+
+.sidebar .header,
+.sidebar .new-task {
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.new-task svg{
+  fill: white;
+  border-radius: 100%;
+  background-color: var(--primary-color);
+  padding: 0.4rem;
+}
+
+.navbar {
+  display: flex;
+  flex-direction: column;
+  margin: 1rem 0;
+}
+
+.nav-item {
+  display: flex;
+  color: var(--text-color);
+  height: 3rem;
+  border-radius: 0.5rem;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+
+  fill: var(--text-color);
+  stroke: color-mix(in srgb, var(--text-color), black 50%);
+}
+
+.nav-item svg {
+  height: 150%;
+}
+
+.new-task {
+  color: var(--primary-color);
+  font-weight: bolder;
+}
+
+.nav-item:hover {
+  background-color: color-mix(in srgb, var(--bg-color), black 10%);
+}
+
+.nav-item.selected {
+  background-color: color-mix(in srgb, var(--primary-color), white 70%);
+  color: color-mix(in srgb, var(--primary-color), black 50%);
+
+  fill: color-mix(in srgb, var(--primary-color), black 50%);
+  stroke: color-mix(in srgb, var(--primary-color), black 50%);
+}
+
+.main {
+  padding: 3rem;
+}
+
+.header img[alt="pfp"] {
+  border-radius: 100%;
+  height: 100%;
+}
+
+.header img {
+  height: 30%;
+}
+

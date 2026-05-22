@@ -133,7 +133,8 @@ function CheckList({ id, title, description, isComplete, dueDate, priority, leng
 
 export default { task: Task, note: Note, checklist: CheckList };
 
-// Deprecated structure of todos
+
+// Deprecated class structure of todos
 // class baseAttribute {
 //     constructor(data_obj) {
 //         this._id = data_obj.id ?? crypto.randomUUID();

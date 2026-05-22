@@ -1,4 +1,4 @@
-import "./styles.css";
-import todoControl from "./todoControl.js";
-import testCases from "./tests.js";
+import "./css/styles.css";
+import todoControl from "./lib/todoControl.js";
+import testCases from "./lib/tests.js";
 
