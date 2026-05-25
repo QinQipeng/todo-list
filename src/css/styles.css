@@ -1,9 +1,9 @@
 @import url(./modern-normalize.css);
 
 :root {
-  --primary-color: rgb(234, 75, 17);
+  --primary-color: rgb(203, 56, 23);
   --bg-color: rgb(236, 236, 236);
-  --text-color: rgb(40, 40, 40);
+  --text-color: #606060;
 }
 
 body, h1, h2, h3, h4, h5, figure, p, ol, ul {
@@ -38,7 +38,8 @@ button:hover {
 
 body {
   display: grid;
-  grid-template-columns: minmax(300px,1fr) 3fr;
+  grid-template-columns: minmax(15rem,1fr) 3fr;
+  grid-auto-flow: column;
   height: 100vh;
 }
 
@@ -47,51 +48,64 @@ body {
   flex-direction: column;
   align-items: stretch;
   background-color: var(--bg-color);
-  gap: 1.5rem;
+  gap: 2.5rem;
   padding: 1rem;
+  padding-right: 1.5rem;
 }
 
-.sidebar .header,
-.sidebar .new-task {
+.sidebar .header {
   height: 2rem;
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
 
-.new-task svg{
-  fill: white;
+.sidebar .header img {
   border-radius: 100%;
-  background-color: var(--primary-color);
-  padding: 0.4rem;
+  height: 30%;
+}
+
+.header img[alt="pfp"] {
+  height: 100%;
 }
 
 .navbar {
   display: flex;
   flex-direction: column;
   margin: 1rem 0;
+  gap: 0.5rem;
 }
 
 .nav-item {
   display: flex;
   color: var(--text-color);
-  height: 3rem;
   border-radius: 0.5rem;
   align-items: center;
-  gap: 1rem;
-  padding: 1rem 1.5rem;
-
-  fill: var(--text-color);
-  stroke: color-mix(in srgb, var(--text-color), black 50%);
+  padding-left: 1.5rem;
+  gap: 0.5rem;
+  height: 2.5rem;
+  cursor: pointer;
 }
 
 .nav-item svg {
-  height: 150%;
+  fill: #2b2b2b;
+  height: 50%;
 }
 
-.new-task {
+.add-new-task {
   color: var(--primary-color);
-  font-weight: bolder;
+  font-weight: 900;
+  padding-left: 0.5rem;
+  font-size: 1.1rem;
+}
+
+.add-new-task svg {
+  fill: white;
+  background-color: var(--primary-color);
+  border-radius: 100%;
+  height: 1.75rem;
+  stroke: none;
+  padding: 0.4rem;
 }
 
 .nav-item:hover {
@@ -101,21 +115,224 @@ body {
 .nav-item.selected {
   background-color: color-mix(in srgb, var(--primary-color), white 70%);
   color: color-mix(in srgb, var(--primary-color), black 50%);
+}
 
-  fill: color-mix(in srgb, var(--primary-color), black 50%);
-  stroke: color-mix(in srgb, var(--primary-color), black 50%);
+.selected > svg {
+  fill: var(--primary-color);
+  stroke: var(--primary-color);
+}
+
+.project {
+  padding-left: 0.5rem;
+}
+
+.project-header {
+  height: 1rem;
+  display: flex;
+  align-items: center;
+  font-weight: 700;
+}
+
+.project-header div {
+  height: 100%;
+  margin-left: auto;
+  display: flex;
+  gap: 1rem;
+}
+
+.proj-list {
+  margin: 1rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.proj-item {
+  display: flex;
+  color: var(--text-color);
+  border-radius: 0.5rem;
+  align-items: center;
+  padding-left: 1rem;
+  gap: 1rem;
+  height: 1.5rem;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.proj-item:hover {
+  background-color: color-mix(in srgb, var(--bg-color), black 10%);
+}
+
+.proj-item::before {
+  height: 1rem;
+  width: 1rem;
+  content: "";
+  background-image: url(../../public/hashtag.svg);
 }
 
 .main {
-  padding: 3rem;
+  display: flex;
+  flex-direction: column;
+  padding: 5rem;
+  /* justify-content: center; */
 }
 
-.header img[alt="pfp"] {
-  border-radius: 100%;
+button.add-new-task {
+  position: relative;
+  display: flex;
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: white;
+  background-color: var(--primary-color);
+  width: fit-content;
+  height: fit-content;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  align-items: center;
+  align-self: center;
+  gap: 0.5rem;
+  top: 40%;
+}
+
+button.add-new-task > svg {
+  fill: white;
+  stroke: white;
+  stroke-width: 0.5rem;
+}
+
+#task-create-box {
+  display: flex;
+  flex-direction: column;
+  border: 1.5px solid var(--bg-color);
+  border-radius: 0.5rem;
+  margin-top: 2rem;
+  max-height: 20vh;
+  min-width: 40rem;
+}
+
+#task-create-box input[type="text"] {
+  height: 2rem;
+  font-size: 1.25rem;
+  font-weight: bold;
+  padding: 0.25rem 0;
+  margin: 0.25rem 0;
+}
+
+#task-create-box textarea {
+  border: 0;
   height: 100%;
+  resize: none;
+  font-weight: light;
 }
 
-.header img {
-  height: 30%;
+.attribute-tab {
+  padding: 0.5rem;
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  border-top: 1.5px solid var(--bg-color);
 }
 
+.attribute-tab > div:nth-child(2){
+  display: flex;
+  gap: 0.5rem;
+}
+
+.attribute-tab button {
+  padding: 0.5rem 1rem;
+  background-color: var(--bg-color);
+  border-radius: 0.5rem;
+}
+
+.attribute-tab #add {
+  color: white;
+  background-color: var(--primary-color);
+}
+
+.attribute-tab .add:disabled {
+    background-color: color-mix(in srgb, var(--primary-color), white 50%);
+}
+
+.card-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.card {
+  display: flex;
+  font-size: 12pt;
+  height: fit-content;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+}
+
+.card > input[type="checkbox"]{
+  height: 12pt;
+  width: 12pt;
+  appearance: auto;
+}
+
+.card > div:nth-last-of-type(1){
+  margin-left: auto;
+  color: rgb(170, 188, 182)
+}
+
+.card.add-new-task {
+  width: 100%;
+  display: flex;
+  color: var(--text-color);
+  font-weight: normal;
+  border-top: 1px solid var(--bg-color);
+  height: fit-content;
+}
+
+.card.add-new-task > svg {
+  fill: var(--primary-color);
+  background-color: transparent;
+  padding: 0;
+  height: 12pt;
+  width: 12pt;
+}
+
+#detail-panel {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--bg-color);
+}
+
+#detail-panel input[type="checkbox"] {
+  appearance: auto  ;
+}
+#detail-panel input[type="text"] {
+  height: 2rem;
+  font-size: 1.25rem;
+  font-weight: bold;
+
+}
+
+#detail-panel textarea {
+  border: 0;
+  height: 100%;
+  resize: none;
+  font-weight: light;
+}
+
+#detail-panel input[type="text"],
+#detail-panel textarea {
+  padding: 0.5rem;
+  margin: 0.5rem;
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+
+#detail-panel .attribute-tab {
+  padding-left: 1rem;
+}
+
+#detail-panel .attribute-tab:first-child {
+  border-top: 0px;
+  border-bottom: 1px solid var(--bg-color);
+  padding: 1rem;
+}
