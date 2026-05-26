@@ -8,9 +8,9 @@
 <body>
     <div class="sidebar">
         <div class="header">
-            <img src="../public/profile picture.png" id="pfp" alt="pfp">
+            <img src="./assets/images/profile picture.png" id="pfp" alt="pfp">
             <strong>User</strong>
-            <img src="../public/arrowdown.svg" alt="arrow-down">
+            <img src="./assets/images/arrowdown.svg" alt="arrow-down">
         </div>
         <section>
             <ul class="navbar">
@@ -40,8 +40,8 @@
             <div class="project-header">
                 My Project
                 <div>
-                    <button><img src="../public/plus.svg" alt="add project"></button>
-                    <button><img src="../public/arrowdown.svg" alt="arrow-down"></button>
+                    <button><img src="./assets/images/plus.svg" alt="add project"></button>
+                    <button><img src="./assets/images/arrowdown.svg" alt="arrow-down"></button>
                 </div>
             </div>
             <ul class="proj-list">
@@ -115,21 +115,53 @@
     <form action="" id="detail-panel">
         <div class="attribute-tab">
             <input type="checkbox" name="check-todo" value="false">
-            <input type="date" name="date" id="date">
+            <div class="datepicker">
+                <button type="button" class="datepicker-button"></button>
+                <input type="date" name="date" class="datepicker-input">
+                <span>Date</span>
+            </div>
             <select name="priority" id="priority">
-                <option value="none">None</option>
-                <option value="low">Low</option>
-                <option value="medium">Medium</option>
-                <option value="high">High</option>
+                <option value="none">
+                    <span class="icon" aria-hidden="true">🏳️</span>
+                    <span class="option-label">None</span>
+                </option>
+                <option value="low">
+                    <span class="icon" aria-hidden="true">🔵</span>
+                    <span class="option-label">Low</span>
+                </option>
+                <option value="medium">
+                    <span class="icon" aria-hidden="true">🟡</span>
+                    <span class="option-label">Medium</span>
+                </option>
+                <option value="high">
+                    <span class="icon" aria-hidden="true">🔴</span>
+                    <span class="option-label">High</span>
+                </option>
             </select>
         </div>
         
         <input type="text" name="title" id="title" placeholder="Todo Title">
         <textarea name="description" id="description" cols="30" rows="10" placeholder="Description"></textarea>
+        <ul class="checklist">
+            <li class="checklist-item"><input type="checkbox"><input type="text" value="item 1"></li>
+            <li class="checklist-item"><input type="checkbox"><input type="text" value="item 2"></li>
+            <li class="checklist-item"><input type="checkbox"><input type="text" value="item 3"></li>
+        </ul>
 
         <div class="attribute-tab">
             <select name="project" id="project">
-                <option value="inbox">Inbox</option>
+                <option value="inbox">
+                    <span class="icon" aria-hidden="true">📦</span>
+                    <span class="option-label">Inbox</span>
+                </option>
+                <option value="inbox">
+                    <span class="icon" aria-hidden="true">#️⃣</span>
+                    <span class="option-label">Project 1</span>
+                </option>
+                <option value="inbox">
+                    <span class="icon" aria-hidden="true">#️⃣</span>
+                    <span class="option-label">Project 2</span>
+                </option>
             </select>
 
             <div>
